@@ -100,8 +100,8 @@ def main():
                 for test, args in [('bistro_routes_smoke.gd', []), ('bistro_settings_smoke.gd', []),
                         ('preview.gd', [f'--world-pack={pack}', '--tabs=9', '--shell=/bin/sh', '--no-focus-skip'])]:
                     print(f'--- {test}', flush=True)
-                    subprocess.run([a.godot, '--headless', '--path', str(project), '--script',
-                        f'res://worlds/bistro/tests/{test}', '--', *args], check=True, cwd=project)
+                    godot_test([a.godot, '--headless', '--path', str(project), '--script',
+                        f'res://worlds/bistro/tests/{test}', '--', *args], project, test)
             elif stage == 'run':
                 subprocess.run([a.godot, '--path', str(project), *extra], check=True, cwd=project)
             else:
@@ -111,6 +111,17 @@ def main():
                     args += ['--limit', str(a.limit)]
                 subprocess.run(args, check=True, cwd=ROOT)
 
+
+def godot_test(command, project, name):
+    """Run a test script; Godot exits 0 when the script fails to parse, so script errors fail too."""
+    proc = subprocess.Popen(command, cwd=project, text=True, stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT, errors='replace')
+    errors = 0
+    for line in proc.stdout:
+        print(line, end='', flush=True)
+        errors += line.startswith('SCRIPT ERROR:')
+    if proc.wait() != 0 or errors:
+        raise SystemExit(f'{name} failed (exit {proc.returncode}, {errors} script errors)')
 
 
 @contextlib.contextmanager
