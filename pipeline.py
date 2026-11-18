@@ -21,6 +21,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import tempfile
 import zipfile
 import zlib
 
@@ -113,14 +114,25 @@ def main():
 
 
 def godot_test(command, project, name):
-    """Run a test script; Godot exits 0 when the script fails to parse, so script errors fail too."""
-    proc = subprocess.Popen(command, cwd=project, text=True, stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT, errors='replace')
-    errors = 0
-    for line in proc.stdout:
-        print(line, end='', flush=True)
-        errors += line.startswith('SCRIPT ERROR:')
-    if proc.wait() != 0 or errors:
+    """Run a test script in a private home with its own session server, so its
+    tabs never open in the user's sessions. Godot exits 0 when the script fails
+    to parse, so script errors fail too."""
+    sys.path.insert(0, str(Path(project).parents[2] / 'tests/support'))
+    from e2e_server import PrivateServer
+    with tempfile.TemporaryDirectory(prefix='bistro-test-') as tmp:
+        home = Path(tmp).resolve()
+        env = {k: v for k, v in os.environ.items() if not k.startswith(('GRAFFITTY_', 'GFT_'))}
+        for kind in ('CONFIG', 'STATE', 'CACHE', 'DATA'):
+            env[f'XDG_{kind}_HOME'] = str(home / kind.lower())
+        with PrivateServer(env, home, None):
+            proc = subprocess.Popen(command, cwd=project, env=env, text=True, stdout=subprocess.PIPE,
+                                    stderr=subprocess.STDOUT, errors='replace')
+            errors = 0
+            for line in proc.stdout:
+                print(line, end='', flush=True)
+                errors += line.startswith('SCRIPT ERROR:')
+            proc.wait()
+    if proc.returncode != 0 or errors:
         raise SystemExit(f'{name} failed (exit {proc.returncode}, {errors} script errors)')
 
 
