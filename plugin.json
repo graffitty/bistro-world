@@ -1,0 +1,8 @@
+{
+  "api": 1,
+  "id": "bistro",
+  "name": "Bistro",
+  "entry": "res://worlds/bistro/world.tscn",
+  "engine": "4.7",
+  "menu": "Worlds::Bistro"
+}

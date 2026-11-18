@@ -1,0 +1,29 @@
+{
+  "archive": "original/Bistro_v5_2.zip",
+  "sources": [
+    "BistroExterior.fbx",
+    "BistroInterior_Wine.fbx"
+  ],
+  "tile_metres": 64,
+  "emission_strength": 12,
+  "world_strength": 0.025,
+  "presets": {
+    "preview": {
+      "resolution": 1024,
+      "cafe_resolution": 2048,
+      "samples": 32,
+      "bounces": 3
+    },
+    "production": {
+      "resolution": 2048,
+      "cafe_resolution": 4096,
+      "samples": 128,
+      "bounces": 6
+    }
+  },
+  "fixture_watts": {
+    "string": 12,
+    "street_lantern": 600,
+    "other": 180
+  }
+}

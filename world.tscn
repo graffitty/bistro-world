@@ -1,0 +1,160 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://worlds/bistro/BistroBaked.gd" id="1"]
+[ext_resource type="PackedScene" path="res://worlds/bistro/generated/preview/scenery.scn" id="2"]
+[ext_resource type="Script" path="res://scenes/TerminalSurface3D.gd" id="3"]
+
+
+[node name="Bistro" type="Node3D"]
+script = ExtResource("1")
+asset_directory = "res://worlds/bistro"
+navigation_graph = "res://worlds/bistro/generated/preview/navgraph.json"
+terminal_backdrop_alpha = 0.85
+
+[node name="Scenery" parent="." instance=ExtResource("2")]
+
+[node name="Surfaces" type="Node3D" parent="."]
+[node name="Destination0" type="MeshInstance3D" parent="Surfaces"]
+script = ExtResource("3")
+surface_id = "cafe-awning"
+visit_order = 0
+canvas = Vector2(2.611988, 1.632493)
+surface_lift = 0.0
+transform = Transform3D(-0.447214, 0.0, -0.894427, 0.0, 1.0, 0.0, 0.894427, 0.0, -0.447214, -12.763932, 2.4, -6.881966)
+
+[node name="ViewPose" type="Camera3D" parent="Surfaces/Destination0"]
+position = Vector3(0, 0, 2.5)
+keep_aspect = 0
+fov = 65
+near = 0.05
+far = 20000.0
+
+
+[node name="Destination1" type="MeshInstance3D" parent="Surfaces"]
+script = ExtResource("3")
+surface_id = "terrace-tables"
+visit_order = 1
+canvas = Vector2(2.611988, 1.632493)
+surface_lift = 0.0
+transform = Transform3D(0.524097, 0.0, -0.851658, 0.0, 1.0, 0.0, 0.851658, 0.0, 0.524097, -11.870854, 2.4, 3.689756)
+
+[node name="ViewPose" type="Camera3D" parent="Surfaces/Destination1"]
+position = Vector3(0, 0, 2.5)
+keep_aspect = 0
+fov = 65
+near = 0.05
+far = 20000.0
+
+
+[node name="Destination2" type="MeshInstance3D" parent="Surfaces"]
+script = ExtResource("3")
+surface_id = "dining-room"
+visit_order = 2
+canvas = Vector2(1.880631, 1.175395)
+surface_lift = 0.0
+transform = Transform3D(-1.0944427104722791, 0.0, 0.03908774811772758, 0.0, 1.0951403148528405, 0.0, -0.03908774811772758, 0.0, -1.0944427104722791, 8.072010951403149, 2.7739904175222447, -4.623843394934976)
+
+[node name="ViewPose" type="Camera3D" parent="Surfaces/Destination2"]
+position = Vector3(0, 0, 1.8)
+keep_aspect = 0
+fov = 65
+near = 0.05
+far = 20000.0
+
+
+[node name="Destination3" type="MeshInstance3D" parent="Surfaces"]
+script = ExtResource("3")
+surface_id = "bottle-shelves"
+visit_order = 3
+canvas = Vector2(1.044795, 0.652997)
+surface_lift = 0.0
+transform = Transform3D(0.1800399726214921, 0.0, -1.0802398357289527, 0.0, 1.0951403148528405, 0.0, 1.0802398357289527, 0.0, 0.1800399726214921, 11.960458863791924, 2.7739904175222447, -2.3933185489390825)
+
+[node name="ViewPose" type="Camera3D" parent="Surfaces/Destination3"]
+position = Vector3(0, 0, 1.0)
+keep_aspect = 0
+fov = 65
+near = 0.05
+far = 20000.0
+
+
+[node name="Destination4" type="MeshInstance3D" parent="Surfaces"]
+script = ExtResource("3")
+surface_id = "window-tables"
+visit_order = 4
+canvas = Vector2(1.880631, 1.175395)
+surface_lift = 0.0
+transform = Transform3D(0.7743813826146475, 0.0, 0.7743813826146475, 0.0, 1.0951403148528405, 0.0, -0.7743813826146475, 0.0, 0.7743813826146475, 7.296052566735113, 3.102532511978097, -0.32174346338124565)
+
+[node name="ViewPose" type="Camera3D" parent="Surfaces/Destination4"]
+position = Vector3(0, 0, 1.8)
+keep_aspect = 0
+fov = 65
+near = 0.05
+far = 20000.0
+
+
+[node name="Destination5" type="MeshInstance3D" parent="Surfaces"]
+script = ExtResource("3")
+surface_id = "cafe-terrace"
+visit_order = 5
+canvas = Vector2(2.611988, 1.632493)
+surface_lift = 0.0
+transform = Transform3D(0.780869, -0.006504, 0.624661, 0.0, 0.999946, 0.010411, -0.624695, -0.00813, 0.780826, -9.561653, 2.173972, 1.047934)
+
+[node name="ViewPose" type="Camera3D" parent="Surfaces/Destination5"]
+position = Vector3(0, 0, 2.5)
+keep_aspect = 0
+fov = 65
+near = 0.05
+far = 20000.0
+
+
+[node name="Destination6" type="MeshInstance3D" parent="Surfaces"]
+script = ExtResource("3")
+surface_id = "square-reverse"
+visit_order = 6
+canvas = Vector2(2.611988, 1.632493)
+surface_lift = 0.0
+transform = Transform3D(0.590017, 0.0, 0.807391, 0.0, 1.0, 0.0, -0.807391, 0.0, 0.590017, 24.981522, 2.3, 22.524959)
+
+[node name="ViewPose" type="Camera3D" parent="Surfaces/Destination6"]
+position = Vector3(0, 0, 2.5)
+keep_aspect = 0
+fov = 65
+near = 0.05
+far = 20000.0
+
+
+[node name="Destination7" type="MeshInstance3D" parent="Surfaces"]
+script = ExtResource("3")
+surface_id = "tree-square"
+visit_order = 7
+canvas = Vector2(2.611988, 1.632493)
+surface_lift = 0.0
+transform = Transform3D(-0.50702, 0.0, -0.861934, 0.0, 1.0, 0.0, 0.861934, 0.0, -0.50702, 58.154836, 2.4, 35.26755)
+
+[node name="ViewPose" type="Camera3D" parent="Surfaces/Destination7"]
+position = Vector3(0, 0, 2.5)
+keep_aspect = 0
+fov = 65
+near = 0.05
+far = 20000.0
+
+
+[node name="Destination8" type="MeshInstance3D" parent="Surfaces"]
+script = ExtResource("3")
+surface_id = "pharmacy-lane"
+visit_order = 8
+canvas = Vector2(2.611988, 1.632493)
+surface_lift = 0.0
+transform = Transform3D(-0.920752, 0.0, 0.390149, 0.0, 1.0, 0.0, -0.390149, 0.0, -0.920752, 24.024627, 2.2, -61.698121)
+
+[node name="ViewPose" type="Camera3D" parent="Surfaces/Destination8"]
+position = Vector3(0, 0, 2.5)
+keep_aspect = 0
+fov = 65
+near = 0.05
+far = 20000.0
+
+

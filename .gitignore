@@ -1,0 +1,17 @@
+# Assets are kept outside Git. Releases ship only the built pack.
+/original/
+/generated/
+/.build/
+*.import
+*.png
+*.exr
+*.glb
+*.zip
+*.scn
+
+# Build and release outputs
+/dist/
+/release/
+
+__pycache__/
+.DS_Store
