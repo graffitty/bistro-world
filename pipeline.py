@@ -2,6 +2,8 @@
 """Official NVIDIA FBX -> Blender Cycles diffuse lightmaps -> Godot scenery.
 
     python3 pipeline.py all --graffitty <path> --preset preview
+    python3 pipeline.py pack --graffitty <path>   # -> dist/bistro.pck, bistro.json
+    python3 pipeline.py test --graffitty <path>   # headless route, settings and pack tests
     python3 pipeline.py run --graffitty <path> -- --editor   # any Godot command in the project
 
 The scenes use res://worlds/bistro paths, so the Godot stages run in a
@@ -30,12 +32,13 @@ def main():
     extra = argv[argv.index('--') + 1:] if '--' in argv else []
     argv = argv[:argv.index('--')] if '--' in argv else argv
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument('stage', choices=['extract', 'preprocess', 'bake', 'denoise', 'export', 'godot', 'all', 'run'])
+    p.add_argument('stage', choices=['extract', 'preprocess', 'bake', 'denoise', 'export', 'godot', 'all', 'pack', 'test', 'run'])
     p.add_argument('--preset', choices=['preview', 'production'], default='preview')
     p.add_argument('--blender', default=shutil.which('blender') or 'blender')
     p.add_argument('--godot', default=shutil.which('godot') or 'godot')
     p.add_argument('--graffitty', type=Path, default=os.environ.get('GRAFFITTY_SOURCE'),
         help='Graffitty checkout (default: $GRAFFITTY_SOURCE)')
+    p.add_argument('--out', type=Path, default=ROOT / 'dist', help='Pack output directory (default: dist/)')
     p.add_argument('--limit', type=int, help='Diagnostic only: bake first N chunks; export refuses incomplete bakes')
     a = p.parse_args(argv)
     if a.limit is not None and a.limit < 1:
@@ -82,10 +85,23 @@ def main():
             elif stage == 'denoise':
                 subprocess.run([a.blender, '--background', '--python-exit-code', '1', '--threads', '8',
                     '--python', str(ROOT/'tools/denoise_lightmaps.py'), '--', a.preset], check=True, cwd=ROOT)
+            elif stage == 'pack':
+                subprocess.run([a.godot, '--headless', '--path', str(project), '--script',
+                    'res://worlds/bistro/tools/build_pack.gd', '--', str(a.out.resolve())], check=True, cwd=project)
+                print(a.out.resolve() / 'bistro.pck')
             elif stage == 'godot':
                 for tool in ['import_baked.gd', 'link_destinations.gd']:
                     subprocess.run([a.godot, '--headless', '--path', str(project), '--script',
                         f'res://worlds/bistro/tools/{tool}', '--', a.preset], check=True, cwd=project)
+            elif stage == 'test':
+                pack = a.out.resolve() / 'bistro.pck'
+                if not pack.is_file():
+                    raise SystemExit(f'{pack} is missing; run pipeline.py pack first')
+                for test, args in [('bistro_routes_smoke.gd', []), ('bistro_settings_smoke.gd', []),
+                        ('preview.gd', [f'--world-pack={pack}', '--tabs=9', '--shell=/bin/sh', '--no-focus-skip'])]:
+                    print(f'--- {test}', flush=True)
+                    subprocess.run([a.godot, '--headless', '--path', str(project), '--script',
+                        f'res://worlds/bistro/tests/{test}', '--', *args], check=True, cwd=project)
             elif stage == 'run':
                 subprocess.run([a.godot, '--path', str(project), *extra], check=True, cwd=project)
             else:

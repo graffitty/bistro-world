@@ -18,38 +18,34 @@ baked in Blender; there are no runtime lights or global illumination.
 | `navgraph.json` | Source navigation graph; the pipeline copies it into the bake |
 | `pipeline.json`, `pipeline.py`, `tools/` | Archive → Blender bake → Godot pipeline |
 | `tools/baked_light.gdshader` | Runtime material: `albedo(UV) × lighting(UV2) + emission(UV)` |
-| `shared/placements.json` | Renderer-neutral destinations, exported from `world.tscn` by `tools/export_native_placements.gd` |
-| `tests/preview.gd` | Materials, routes, visibility, and screenshot check |
+| `tests/preview.gd` | Opens the built pack: materials, routes, visibility, and screenshot check |
+| `tests/bistro_routes_smoke.gd` | Route policy: doorway graph, collision-safe outdoor flights |
+| `tests/bistro_settings_smoke.gd` | Shared world kit, default preset, and effect states match Flat |
 | `generated/preview/` | Baked scenery, routes, and graph (asset, not in Git) |
 
-To move a destination, edit `world.tscn` in Godot, then refresh
-`shared/placements.json` from the Graffitty checkout:
-
-```sh
-cd frontends/godot/project
-godot --headless --path . --script res://worlds/bistro/tools/export_native_placements.gd \
-  -- "$PWD/worlds/bistro/shared/placements.json"
-```
-
-The export records the scene's SHA-256 and applies the same destination
-reorientation as `BistroBaked.gd`. Rerun the pipeline's `godot` stage so camera
-routes reach the new pose.
+To move a destination, edit `world.tscn` in Godot, then rerun the pipeline's
+`godot` stage so camera routes reach the new pose.
 
 ## Validate
 
-From this repository:
+From this repository, after `pipeline.py pack`:
 
 ```sh
-python3 pipeline.py run --graffitty <checkout> -- --headless \
-  --script res://worlds/bistro/tests/preview.gd -- --tabs=9 --shell=/bin/sh --no-focus-skip
+python3 pipeline.py test --graffitty <checkout>
 ```
 
-It checks baked materials on every surface, no runtime lights or SDFGI, unit sky
+This runs the route and settings smoke tests, then `tests/preview.gd` against
+`dist/bistro.pck`, so it tests what ships. `preview.gd` checks baked materials on every surface, no runtime lights or SDFGI, unit sky
 intensity, the cafe doorway and every destination link and curved route against
 the scenery's triangles, nine unobstructed terminal views, and connected routes.
-It uses a temporary configuration directory. Omit `--headless` to also save
-screenshots of every destination and four review views to
-`frontends/godot/project/.cache/bistro/preview/`.
+It uses a temporary configuration directory. To also save screenshots of every
+destination and four review views to `frontends/godot/project/.cache/bistro/preview/`,
+run it in a window:
+
+```sh
+python3 pipeline.py run --graffitty <checkout> -- --script res://worlds/bistro/tests/preview.gd \
+  -- --world-pack="$PWD/dist/bistro.pck" --tabs=9 --shell=/bin/sh --no-focus-skip
+```
 
 Graffitty's own tests cover flights (`tests/bistro_flight_smoothness_smoke.gd`)
 and the rendered `night-lighting-tab-flight` replay

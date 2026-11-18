@@ -162,15 +162,13 @@ Put the assets back in place:
 
 ## Build the pack
 
-From the Graffitty checkout, with the same Godot version Graffitty ships (4.7):
+From this repository, with the same Godot version Graffitty ships (4.7):
 
 ```sh
-godot --headless --path frontends/godot/project --script tools/build_packs.gd -- --worlds-only
+python3 pipeline.py pack --graffitty <checkout>
 ```
 
-This writes `bistro.pck` and `bistro.json` to
-`frontends/godot/project/dist/`. The same command builds Castle first and stops
-if Castle's assets are missing.
+This writes `bistro.pck` and `bistro.json` to this repository's `dist/`.
 
 ## Make the zip
 
@@ -178,7 +176,7 @@ From this repository:
 
 ```sh
 VERSION=v1.0.0
-DIST=<graffitty>/frontends/godot/project/dist
+DIST=dist
 rm -rf release && mkdir -p release/bistro
 cp "$DIST/bistro.pck" "$DIST/bistro.json" release/bistro/
 cp LICENSE.txt release/bistro/

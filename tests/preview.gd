@@ -1,5 +1,6 @@
 extends SceneTree
-## Run with -- --tabs=9 --shell=/bin/sh. Screenshots go to res://.cache/bistro/preview.
+## Run with -- --world-pack=<bistro.pck> --tabs=9 --shell=/bin/sh, or through
+## `pipeline.py test`. Screenshots go to res://.cache/bistro/preview.
 ## The cafe doorway is the three navigation nodes starting here.
 const DOORWAY_START := 1190
 var failures := 0
@@ -17,7 +18,15 @@ func run():
 	root.add_child(viewport)
 	var host = load("res://scenes/TerminalHost.gd").new()
 	viewport.add_child(host)
-	if not host.switch_world("res://worlds/bistro"):
+	var pack := ""
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--world-pack="): pack = arg.trim_prefix("--world-pack=")
+	if pack.is_empty():
+		push_error("Pass --world-pack=<bistro.pck>; run pipeline.py pack first")
+		quit(1)
+		return
+	if not host.switch_world(pack):
+		push_error("Bistro did not open from " + pack)
 		quit(1)
 		return
 	var w = host.world
@@ -56,7 +65,8 @@ func run():
 		var hit = space.intersect_ray(PhysicsRayQueryParameters3D.create(w.nav_nodes[DOORWAY_START+i],w.nav_nodes[DOORWAY_START+i+1]))
 		check(hit.is_empty(), "Doorway segment "+str(i)+" clear: "+str(hit))
 	check(w.authored_surface_count == 9, "Nine authored destinations")
-	DirAccess.make_dir_recursive_absolute(output)
+	if DisplayServer.get_name() != "headless":
+		DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(output))
 	for i in w.authored_surface_count:
 		var s = w.surfaces[i]
 		var frame = s.uv_basis()
