@@ -37,10 +37,10 @@ routes reach the new pose.
 
 ## Validate
 
-From the Graffitty checkout:
+From this repository:
 
 ```sh
-godot --headless --path frontends/godot/project \
+python3 pipeline.py run --graffitty <checkout> -- --headless \
   --script res://worlds/bistro/tests/preview.gd -- --tabs=9 --shell=/bin/sh --no-focus-skip
 ```
 

@@ -142,14 +142,18 @@ its manifest are release assets, never committed files: the pack is about
 
 ## Set up a working copy
 
-The scenes use `res://worlds/bistro/...` paths, so the world builds inside a
-Graffitty checkout. Link this repository into it:
+The scenes use `res://worlds/bistro/...` paths and Graffitty's shared world
+kit, so the Godot stages run in a Graffitty checkout's Godot project. Point the
+pipeline at your checkout with `--graffitty <checkout>` or `GRAFFITTY_SOURCE`.
+For the length of each run, `pipeline.py` links this repository at
+`frontends/godot/project/worlds/bistro` (ignored by Graffitty's Git) and removes
+the link afterwards. To open the Godot editor with the world linked:
 
 ```sh
-ln -s ../../bistro-world <graffitty>/worlds/bistro
+python3 pipeline.py run --graffitty <checkout> -- --editor
 ```
 
-Then put the assets back in place:
+Put the assets back in place:
 
 | Path | Contents | Needed for |
 | --- | --- | --- |
